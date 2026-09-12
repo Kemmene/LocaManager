@@ -1,0 +1,8 @@
+{
+  "name": "LocaManager - Gestion Locative SaaS",
+  "description": "Plateforme SaaS complète de gestion locative, suivi des biens (villas, studios, immeubles), logements locatifs, baux, échéancier intelligent, encaissements, quittances de loyer et forfaits DISCOM.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
