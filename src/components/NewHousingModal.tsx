@@ -110,8 +110,9 @@ export const NewHousingModal: React.FC<NewHousingModalProps> = ({
   const [adresse, setAdresse] = useState('');
   const [description, setDescription] = useState('');
 
-  // Immeuble specific fields: Floors and Basements
+  // Immeuble specific fields: Floors, Ground floor with housing, and Basements
   const [nombreEtages, setNombreEtages] = useState<number>(3);
+  const [aLogementsRdc, setALogementsRdc] = useState<boolean>(true);
   const [hasSousSol, setHasSousSol] = useState<boolean>(false);
   const [nombreSousSols, setNombreSousSols] = useState<number>(1);
 
@@ -198,6 +199,7 @@ export const NewHousingModal: React.FC<NewHousingModalProps> = ({
         photo: finalPhoto,
         statut: 'vide',
         nombre_etages: type === 'immeuble' ? Math.max(1, Number(nombreEtages)) : undefined,
+        a_logements_rdc: type === 'immeuble' ? aLogementsRdc : undefined,
         a_sous_sol: type === 'immeuble' ? hasSousSol : undefined,
         nombre_sous_sols: (type === 'immeuble' && hasSousSol) ? Math.max(1, Number(nombreSousSols)) : undefined
       },
@@ -495,12 +497,68 @@ export const NewHousingModal: React.FC<NewHousingModalProps> = ({
                   </div>
                 </div>
 
+                {/* Champ Rez-de-chaussée (RDC) : Contient-il des logements ? */}
+                <div className="p-3 bg-white rounded-xl border border-indigo-200 space-y-2">
+                  <label className="block text-xs font-bold text-slate-800">
+                    Le rez-de-chaussée contient-il des logements ? <span className="text-red-500">*</span>
+                  </label>
+                  <p className="text-[11px] text-slate-500">
+                    Précisez si le rez-de-chaussée abrite des logements (appartements, studios, commerces) ou s'il s'agit uniquement de parties communes (hall, parking).
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-0.5">
+                    <label 
+                      className={`flex items-start gap-2.5 p-2.5 rounded-xl border cursor-pointer transition-all ${
+                        aLogementsRdc 
+                          ? 'border-indigo-600 bg-indigo-50/70 text-indigo-950 font-bold ring-1 ring-indigo-600/20' 
+                          : 'border-slate-200 bg-slate-50/60 text-slate-700 hover:bg-slate-50'
+                      }`}
+                    >
+                      <input 
+                        type="radio" 
+                        name="a_logements_rdc"
+                        checked={aLogementsRdc}
+                        onChange={() => setALogementsRdc(true)}
+                        className="mt-0.5 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                      />
+                      <div>
+                        <span className="text-xs font-bold block">Oui, le rez-de-chaussée a des logements</span>
+                        <span className="text-[10px] text-slate-500 font-normal block mt-0.5">
+                          Sera disponible et mentionné comme niveau « Rez-de-chaussée »
+                        </span>
+                      </div>
+                    </label>
+
+                    <label 
+                      className={`flex items-start gap-2.5 p-2.5 rounded-xl border cursor-pointer transition-all ${
+                        !aLogementsRdc 
+                          ? 'border-indigo-600 bg-indigo-50/70 text-indigo-950 font-bold ring-1 ring-indigo-600/20' 
+                          : 'border-slate-200 bg-slate-50/60 text-slate-700 hover:bg-slate-50'
+                      }`}
+                    >
+                      <input 
+                        type="radio" 
+                        name="a_logements_rdc"
+                        checked={!aLogementsRdc}
+                        onChange={() => setALogementsRdc(false)}
+                        className="mt-0.5 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                      />
+                      <div>
+                        <span className="text-xs font-bold block">Non, aucun logement au RDC</span>
+                        <span className="text-[10px] text-slate-500 font-normal block mt-0.5">
+                          Hall d'entrée, parking ou locaux techniques uniquement
+                        </span>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
                 {/* Résumé de configuration en direct */}
-                <div className="p-2.5 bg-white rounded-lg border border-indigo-100 flex items-center justify-between text-xs">
+                <div className="p-2.5 bg-white rounded-lg border border-indigo-100 flex flex-wrap items-center justify-between gap-2 text-xs">
                   <span className="text-slate-600">Structure enregistrée :</span>
                   <span className="font-bold text-indigo-900">
-                    Rez-de-chaussée + {nombreEtages} étage{nombreEtages > 1 ? 's' : ''}
-                    {hasSousSol ? ` + ${nombreSousSols} niveau${nombreSousSols > 1 ? 'x' : ''} en sous-sol` : ' (sans sous-sol)'}
+                    {aLogementsRdc ? 'Rez-de-chaussée (avec logements)' : 'Rez-de-chaussée (sans logements - hall/parking)'} + {nombreEtages} étage{nombreEtages > 1 ? 's' : ''}
+                    {hasSousSol ? ` + ${nombreSousSols} sous-sol(s)` : ''}
                   </span>
                 </div>
               </div>

@@ -136,6 +136,7 @@ export interface Logement {
   is_archived?: boolean;
   // Propriétés spécifiques Immeuble et configuration des étages
   nombre_etages?: number;
+  a_logements_rdc?: boolean; // Le rez-de-chaussée contient-il des logements ?
   a_sous_sol?: boolean;
   nombre_sous_sols?: number;
 }

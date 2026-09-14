@@ -304,6 +304,7 @@ export const LogementsView: React.FC<LogementsViewProps> = ({
                     {logement.type === 'immeuble' && (
                       <span className="px-2 py-0.5 bg-indigo-900/90 text-white text-[10px] font-bold rounded shadow-xs">
                         R+{logement.nombre_etages || 1}
+                        {logement.a_logements_rdc !== false ? ' • RDC avec logements' : ' • RDC sans logements'}
                         {logement.a_sous_sol ? ` • ${logement.nombre_sous_sols || 1} Sous-sol` : ''}
                       </span>
                     )}
@@ -533,6 +534,49 @@ export const LogementsView: React.FC<LogementsViewProps> = ({
                 </div>
               </div>
 
+              {/* Si Immeuble : Configuration étages & Rez-de-chaussée */}
+              {editingLogement.type === 'immeuble' && (
+                <div className="p-3 bg-indigo-50/70 border border-indigo-200 rounded-lg space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-indigo-950">
+                      Configuration Immeuble (Étages & RDC)
+                    </label>
+                    <span className="text-[10px] font-bold bg-white px-2 py-0.5 rounded border border-indigo-200 text-indigo-800">
+                      R+{editingLogement.nombre_etages || 1}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 mb-0.5">
+                        Nombre d'étages :
+                      </label>
+                      <input 
+                        type="number"
+                        min="1"
+                        max="50"
+                        value={editingLogement.nombre_etages || 1}
+                        onChange={(e) => setEditingLogement({ ...editingLogement, nombre_etages: Math.max(1, parseInt(e.target.value) || 1) })}
+                        className="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded text-xs font-bold text-slate-800 focus:outline-none focus:border-indigo-500"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-4">
+                      <input 
+                        type="checkbox"
+                        id="edit-a-logements-rdc"
+                        checked={editingLogement.a_logements_rdc !== false}
+                        onChange={(e) => setEditingLogement({ ...editingLogement, a_logements_rdc: e.target.checked })}
+                        className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer"
+                      />
+                      <label htmlFor="edit-a-logements-rdc" className="text-xs font-medium text-slate-800 cursor-pointer select-none">
+                        Le rez-de-chaussée contient des logements
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div>
                 <label className="block text-xs font-bold text-slate-600 mb-1">
                   Description :
@@ -604,7 +648,9 @@ export const LogementsView: React.FC<LogementsViewProps> = ({
                     <div key={p.id} className="p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between text-xs">
                       <div>
                         <span className="font-bold text-slate-800">{p.nom} ({p.type})</span>
-                        <span className="text-[11px] text-slate-500 block">Étage {p.etage} • {p.superficie} m²</span>
+                        <span className="text-[11px] text-slate-500 block">
+                          {p.etage === 0 ? 'Rez-de-chaussée (RDC)' : p.etage < 0 ? `Sous-sol ${p.etage}` : `Étage ${p.etage}`} • {p.superficie} m²
+                        </span>
                       </div>
                       <span className="font-bold text-emerald-700">{formatFCFA(p.loyer_reference)}</span>
                     </div>

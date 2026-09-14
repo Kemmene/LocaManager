@@ -205,7 +205,7 @@ export const PiecesView: React.FC<PiecesViewProps> = ({
                               {piece.numero} - {piece.nom}
                             </h4>
                             <p className="text-[11px] text-[#45464d] mt-0.5">
-                              {piece.type} • {piece.superficie} m² • Étage {piece.etage}
+                              {piece.type} • {piece.superficie} m² • {piece.etage === 0 ? 'Rez-de-chaussée (RDC)' : piece.etage < 0 ? `Sous-sol ${piece.etage}` : `Étage ${piece.etage}`}
                             </p>
                           </div>
 
